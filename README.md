@@ -71,7 +71,7 @@ system-design/
 
 ## Learning Path
 
-### 🚀 Beginner Path (4-6 weeks)
+###  Beginner Path (4-6 weeks)
 **Week 1-2: Fundamentals**
 - Read `01_Fundamentals/scalability/README.md`
 - Read `01_Fundamentals/availability/README.md`
@@ -87,7 +87,7 @@ system-design/
 - Practice `04_Case_Studies/url_shortener/README.md`
 - Practice `04_Case_Studies/social_media_feed/README.md`
 
-### 🎯 Intermediate Path (6-8 weeks)
+###  Intermediate Path (6-8 weeks)
 **Week 1-2: Advanced Fundamentals**
 - Complete all `01_Fundamentals` sections
 - Focus on `networking/`, `security/`, `monitoring/`
@@ -105,7 +105,7 @@ system-design/
 - Complete 4-5 case studies from `04_Case_Studies/`
 - Focus on different domains (social, e-commerce, messaging)
 
-### 🏆 Advanced Path (8-12 weeks)
+###  Advanced Path (8-12 weeks)
 **Week 1-3: Mastery**
 - Review all fundamentals with focus on trade-offs
 - Study advanced topics in each area
@@ -130,19 +130,19 @@ system-design/
 
 ## Key Features
 
-### 📚 Comprehensive Coverage
+###  Comprehensive Coverage
 - **Theory**: Fundamental concepts and principles
 - **Practice**: Real-world case studies and examples
 - **Patterns**: Reusable architectural patterns
 - **Components**: Building block deep dives
 
-### 🎯 Interview Focused
+###  Interview Focused
 - **Framework**: Step-by-step interview approach
 - **Examples**: Common interview problems with solutions
 - **Tips**: Communication and presentation strategies
 - **Practice**: Progressive difficulty case studies
 
-### 🔧 Practical Implementation
+###  Practical Implementation
 - **Code Examples**: Real implementation snippets
 - **Configuration**: Sample configurations
 - **Diagrams**: ASCII and architectural diagrams
@@ -152,7 +152,7 @@ system-design/
 
 ## How to Use This Repository
 
-### 📖 Study Approach
+###  Study Approach
 1. **Read Theory**: Start with fundamentals
 2. **Understand Components**: Learn building blocks
 3. **Study Patterns**: Recognize reusable solutions
@@ -167,7 +167,7 @@ system-design/
 5. **Analyze**: Identify bottlenecks and trade-offs
 6. **Review**: Compare with provided solution
 
-### 👥 Group Study
+###  Group Study
 1. **Weekly Meetings**: Discuss one topic per week
 2. **Design Sessions**: Whiteboard problems together
 3. **Peer Review**: Review each other's designs
@@ -180,7 +180,7 @@ system-design/
 
 We welcome contributions! Here's how you can help:
 
-### 🐛 Report Issues
+###  Report Issues
 - Found errors or typos? Create an issue
 - Suggestions for improvements? Create an issue
 - Want to add new content? Create an issue first
@@ -191,7 +191,7 @@ We welcome contributions! Here's how you can help:
 - Implementation examples
 - Real-world company examples
 
-### 🔧 Improve Content
+###  Improve Content
 - Fix typos and errors
 - Improve explanations
 - Add more examples
@@ -234,24 +234,24 @@ A: The repository is regularly updated with latest industry practices and techno
 
 ## Resources
 
-### 📚 Recommended Books
+###  Recommended Books
 - "Designing Data-Intensive Applications" by Martin Kleppmann
 - "System Design Interview – An insider's guide" by Alex Xu
 - "Site Reliability Engineering" by Google
 - "The Phoenix Project" by Gene Kim
 
-### 🌐 Online Resources
+###  Online Resources
 - [Grokking System Design Interview](https://www.educative.io/courses/grokking-the-system-design-interview)
 - [System Design Primer](https://github.com/donnemartin/system-design-primer)
 - [High Scalability](http://highscalability.com/)
 - [InfoQ Architecture](https://www.infoq.com/architecture/)
 
-### 🎥 Video Courses
+###  Video Courses
 - [System Design Interview Course](https://www.youtube.com/playlist)
 - [MIT Distributed Systems](https://www.youtube.com/playlist)
 - [Berkeley CS162](https://www.youtube.com/playlist)
 
-### 🛠️ Tools
+###  Tools
 - **Diagramming**: draw.io, Lucidchart, Excalidraw
 - **Mock Interviews**: Pramp, interviewing.io
 - **Practice**: LeetCode, HackerRank
@@ -261,12 +261,12 @@ A: The repository is regularly updated with latest industry practices and techno
 
 ## Stay Connected
 
-### 📧 Contact
+###  Contact
 - Create issues for questions
 - Start discussions for topics
 - Contribute improvements
 
-### 🔄 Updates
+###  Updates
 - Star the repository for updates
 - Watch for new content
 - Contribute to community
@@ -279,6 +279,6 @@ This repository is for **educational purposes**. Feel free to use, fork, and con
 
 ---
 
-**Happy Learning! 🚀**
+**Happy Learning! **
 
 Remember: System design is not about finding the "perfect" solution, but about understanding trade-offs and making informed decisions. Keep practicing, stay curious, and enjoy the journey!
