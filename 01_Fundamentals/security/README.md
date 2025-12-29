@@ -81,16 +81,16 @@ class AuthenticationService:
         user = self.database.get_user(username)
         if not self.verify_password(password, user.password_hash):
             return False
-        
+
         # Factor 2: Token (optional)
         if token and not self.verify_token(token, user.mfa_secret):
             return False
-        
+
         return True
-    
+
     def verify_password(self, input_password, stored_hash):
         return bcrypt.checkpw(input_password.encode(), stored_hash.encode())
-    
+
     def verify_token(self, input_token, mfa_secret):
         return pyotp.TOTP(mfa_secret).verify(input_token)
 ```
@@ -111,7 +111,7 @@ class RBAC:
             'editor': ['read', 'write'],
             'viewer': ['read']
         }
-    
+
     def can_access(self, user_role, permission):
         return permission in self.roles.get(user_role, [])
 ```
@@ -127,16 +127,16 @@ class ABAC:
             self.sensitivity_policy(resource, action)
         ]
         return all(policies)
-    
+
     def department_policy(self, user, resource):
         return user.department == resource.owner_department
-    
+
     def time_policy(self, user):
         return 9 <= datetime.now().hour <= 17  # Business hours
-    
+
     def location_policy(self, user):
         return user.location in ['US', 'CA', 'UK']
-    
+
     def sensitivity_policy(self, resource, action):
         if resource.sensitivity == 'high':
             return action in ['read'] and user.clearance >= 'secret'
@@ -163,13 +163,13 @@ from cryptography.fernet import Fernet
 class SymmetricEncryption:
     def __init__(self, key):
         self.cipher = Fernet(key)
-    
+
     def encrypt(self, data):
         return self.cipher.encrypt(data.encode())
-    
+
     def decrypt(self, encrypted_data):
         return self.cipher.decrypt(encrypted_data).decode()
-    
+
     @staticmethod
     def generate_key():
         return Fernet.generate_key()
@@ -198,7 +198,7 @@ class AsymmetricEncryption:
             key_size=2048
         )
         self.public_key = self.private_key.public_key()
-    
+
     def encrypt(self, data):
         encrypted = self.public_key.encrypt(
             data.encode(),
@@ -209,7 +209,7 @@ class AsymmetricEncryption:
             )
         )
         return encrypted
-    
+
     def decrypt(self, encrypted_data):
         decrypted = self.private_key.decrypt(
             encrypted_data,
@@ -220,7 +220,7 @@ class AsymmetricEncryption:
             )
         )
         return decrypted.decode()
-    
+
     def sign(self, data):
         signature = self.private_key.sign(
             data.encode(),
@@ -231,7 +231,7 @@ class AsymmetricEncryption:
             hashes.SHA256()
         )
         return signature
-    
+
     def verify(self, data, signature):
         try:
             self.public_key.verify(
@@ -257,15 +257,15 @@ class AsymmetricEncryption:
 class APIKeyAuth:
     def __init__(self, database):
         self.db = database
-    
+
     def authenticate(self, api_key):
         key_info = self.db.get_api_key(api_key)
         if not key_info or not key_info['active']:
             return None
-        
+
         # Update last used timestamp
         self.db.update_last_used(api_key)
-        
+
         return {
             'user_id': key_info['user_id'],
             'permissions': key_info['permissions'],
@@ -281,7 +281,7 @@ from datetime import datetime, timedelta
 class JWTAuth:
     def __init__(self, secret_key):
         self.secret_key = secret_key
-    
+
     def generate_token(self, user_id, permissions, expires_in=3600):
         payload = {
             'user_id': user_id,
@@ -290,7 +290,7 @@ class JWTAuth:
             'iat': datetime.utcnow()
         }
         return jwt.encode(payload, self.secret_key, algorithm='HS256')
-    
+
     def verify_token(self, token):
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=['HS256'])
@@ -317,16 +317,16 @@ Grant  Redirect    Access Token    API Request
 class RateLimiter:
     def __init__(self, redis_client):
         self.redis = redis_client
-    
+
     def is_allowed(self, client_id, limit=100, window=3600):
         key = f"rate_limit:{client_id}"
         current = self.redis.incr(key)
-        
+
         if current == 1:
             self.redis.expire(key, window)
-        
+
         return current <= limit
-    
+
     def get_remaining_requests(self, client_id, limit=100, window=3600):
         key = f"rate_limit:{client_id}"
         current = int(self.redis.get(key) or 0)
@@ -343,12 +343,12 @@ class InputValidator:
     def validate_email(email):
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         return re.match(pattern, email) is not None
-    
+
     @staticmethod
     def sanitize_html(input_string):
         # Escape HTML to prevent XSS
         return escape(input_string)
-    
+
     @staticmethod
     def validate_sql_input(input_string):
         # Check for SQL injection patterns
@@ -358,7 +358,7 @@ class InputValidator:
             r"(\bOR\b.*=.*\bOR\b)",
             r"(\bAND\b.*=.*\bAND\b)"
         ]
-        
+
         for pattern in dangerous_patterns:
             if re.search(pattern, input_string, re.IGNORECASE):
                 return False
@@ -370,9 +370,9 @@ class InputValidator:
 ### Identity and Access Management (IAM)
 ```
 AWS IAM Example:
-┌─────────────────────────────────────────────────────────┐
+┌────────────────────────────────────────────────────────┐
 │                    AWS Account                         │
-│                                                         │
+│                                                        │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
 │  │   Users     │  │   Roles     │  │   Groups    │     │
 │  │             │  │             │  │             │     │
@@ -380,14 +380,14 @@ AWS IAM Example:
 │  │ • Passwords │  │ • Lambda    │  │ • Admins    │     │
 │  │ • MFA       │  │   Role      │  │             │     │
 │  └─────────────┘  └─────────────┘  └─────────────┘     │
-│                                                         │
+│                                                        │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
-│  │ Policies    │  │ Permissions │  │ Conditions │     │
+│  │ Policies    │  │ Permissions │  │ Conditions  │     │
 │  │             │  │             │  │             │     │
 │  │ • Allow S3  │  │ • s3:Get*   │  │ • IP Range  │     │
 │  │ • Deny EC2  │  │ • ec2:*     │  │ • Time      │     │
 │  └─────────────┘  └─────────────┘  └─────────────┘     │
-└─────────────────────────────────────────────────────────┘
+└────────────────────────────────────────────────────────┘
 ```
 
 **Best Practices:**
@@ -400,19 +400,19 @@ AWS IAM Example:
 ### Virtual Private Cloud (VPC) Security
 ```
 Secure VPC Design:
-┌─────────────────────────────────────────────────────────┐
+┌────────────────────────────────────────────────────────┐
 │                    Public Subnet                       │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
 │  │   Load      │  │   NAT       │  │   Bastion   │     │
 │  │ Balancer    │  │ Gateway     │  │   Host      │     │
 │  └─────────────┘  └─────────────┘  └─────────────┘     │
-│                                                         │
-│                    Private Subnet                       │
+│                                                        │
+│                    Private Subnet                      │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
 │  │ Application │  │ Database    │  │   Cache     │     │
 │  │   Servers   │  │   Servers   │  │   Servers   │     │
 │  └─────────────┘  └─────────────┘  └─────────────┘     │
-└─────────────────────────────────────────────────────────┘
+└────────────────────────────────────────────────────────┘
 ```
 
 **Security Layers:**
@@ -450,23 +450,23 @@ CMD ["python", "/app/app.py"]
 #### Kubernetes Security
 ```
 Pod Security Standards:
-┌─────────────────────────────────────────────────────────┐
+┌────────────────────────────────────────────────────────┐
 │                    Pod Security                        │
-│                                                         │
+│                                                        │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
 │  │ Privileged  │  │   Host      │  │   Root      │     │
 │  │ Containers  │  │   Access    │  │   User      │     │
 │  │             │  │             │  │             │     │
 │  │ ✗ Avoid     │  │ ✗ Restrict  │  │ ✗ Prevent   │     │
 │  └─────────────┘  └─────────────┘  └─────────────┘     │
-│                                                         │
+│                                                        │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
 │  │ Network     │  │   Secrets   │  │   RBAC      │     │
-│  │ Policies    │  │ Management │  │             │     │
+│  │ Policies    │  │ Management  │  │             │     │
 │  │             │  │             │  │             │     │
 │  │ ✓ Implement │  │ ✓ Secure    │  │ ✓ Enforce   │     │
 │  └─────────────┘  └─────────────┘  └─────────────┘     │
-└─────────────────────────────────────────────────────────┘
+└────────────────────────────────────────────────────────┘
 ```
 
 **Security Contexts:**
@@ -512,7 +512,7 @@ Scanning   Scanning Scanning Security
 # Secure Terraform configuration
 resource "aws_s3_bucket" "secure_bucket" {
   bucket = "my-secure-bucket"
-  
+
   # Encryption
   server_side_encryption_configuration {
     rule {
@@ -521,18 +521,18 @@ resource "aws_s3_bucket" "secure_bucket" {
       }
     }
   }
-  
+
   # Versioning
   versioning {
     enabled = true
   }
-  
+
   # Access logging
   logging {
     target_bucket = aws_s3_bucket.log_bucket.id
     target_prefix = "access-log/"
   }
-  
+
   # Public access block
   block_public_acls       = true
   block_public_policy     = true
@@ -623,27 +623,27 @@ iptables -A INPUT -j DROP
 class DatabaseEncryption:
     def __init__(self, encryption_key):
         self.cipher = Fernet(encryption_key)
-    
+
     def encrypt_sensitive_field(self, data):
         if data is None:
             return None
         return self.cipher.encrypt(data.encode()).decode()
-    
+
     def decrypt_sensitive_field(self, encrypted_data):
         if encrypted_data is None:
             return None
         return self.cipher.decrypt(encrypted_data.encode()).decode()
-    
+
     def encrypt_user_data(self, user_data):
         sensitive_fields = ['ssn', 'credit_card', 'email']
         encrypted_data = user_data.copy()
-        
+
         for field in sensitive_fields:
             if field in encrypted_data:
                 encrypted_data[field] = self.encrypt_sensitive_field(
                     encrypted_data[field]
                 )
-        
+
         return encrypted_data
 ```
 
@@ -660,12 +660,12 @@ class DataMasking:
         else:
             masked_local = local[0] + '*' * (len(local) - 2) + local[-1]
         return f"{masked_local}@{domain}"
-    
+
     @staticmethod
     def mask_credit_card(card_number):
         # Show only last 4 digits
         return '*' * (len(card_number) - 4) + card_number[-4:]
-    
+
     @staticmethod
     def mask_phone_number(phone):
         # Show only last 4 digits
@@ -684,10 +684,10 @@ class IntrusionDetector:
             r'(union|select|insert|update|delete).*from',  # SQL injection
             r'(\${.*})',  # Template injection
         ]
-    
+
     def detect_intrusion(self, request_data):
         alerts = []
-        
+
         for pattern in self.suspicious_patterns:
             if re.search(pattern, str(request_data), re.IGNORECASE):
                 alerts.append({
@@ -696,17 +696,17 @@ class IntrusionDetector:
                     'data': request_data,
                     'timestamp': datetime.utcnow()
                 })
-        
+
         return alerts
-    
+
     def check_rate_limit_abuse(self, client_ip, requests_per_minute=100):
         # Implement rate limit abuse detection
         key = f"requests:{client_ip}"
         current_requests = self.redis.incr(key)
-        
+
         if current_requests == 1:
             self.redis.expire(key, 60)
-        
+
         if current_requests > requests_per_minute:
             return {
                 'type': 'rate_limit_abuse',
@@ -714,7 +714,7 @@ class IntrusionDetector:
                 'requests': current_requests,
                 'timestamp': datetime.utcnow()
             }
-        
+
         return None
 ```
 
@@ -733,7 +733,7 @@ class SecurityLogger:
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
         self.logger.setLevel(logging.INFO)
-    
+
     def log_login_attempt(self, username, ip_address, success):
         event = {
             'event_type': 'login_attempt',
@@ -743,7 +743,7 @@ class SecurityLogger:
             'timestamp': datetime.utcnow().isoformat()
         }
         self.logger.info(f"LOGIN_ATTEMPT: {event}")
-    
+
     def log_permission_denied(self, user_id, resource, action):
         event = {
             'event_type': 'permission_denied',
@@ -753,7 +753,7 @@ class SecurityLogger:
             'timestamp': datetime.utcnow().isoformat()
         }
         self.logger.warning(f"PERMISSION_DENIED: {event}")
-    
+
     def log_security_violation(self, violation_type, details):
         event = {
             'event_type': 'security_violation',
@@ -794,7 +794,7 @@ def login(username, password):
 def login(username, password, ip_address):
     if rate_limiter.is_blocked(ip_address):
         raise Exception("Too many login attempts")
-    
+
     user = get_user(username)
     if user and verify_password(password, user.password_hash):
         rate_limiter.reset_attempts(ip_address)

@@ -243,40 +243,40 @@ else:
 ```
 Coordinator
     ↓
-┌─────────────────────────────────────────┐
-│              Phase 1: CanCommit         │
-│                                         │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  │
-│  │Resource A│  │Resource B│  │Resource C│ │
+┌────────────────────────────────────────┐
+│              Phase 1: CanCommit        │
+│                                        │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐ │
+│  │  Res A  │  │  Res B  │  │  Res C  │ │
 │  └─────────┘  └─────────┘  └─────────┘ │
-│         ↓           ↓           ↓         │
+│         ↓           ↓           ↓      │
 │    CanCommit   CanCommit   CanCommit   │
 │    Response    Response    Response    │
 │  └─────────┘  └─────────┘  └─────────┘ │
-│                                     │
+│                                        │
 │         All CanCommit? ──────────────┘ │
-│                ↓                   │
-│              Phase 2: PreCommit       │
-│                                     │
+│                ↓                       │
+│              Phase 2: PreCommit        │
+│                                        │
 │  ┌─────────┐  ┌─────────┐  ┌─────────┐ │
-│  │Resource A│  │Resource B│  │Resource C│ │
+│  │  Res A  │  │  Res B  │  │  Res C  │ │
 │  └─────────┘  └─────────┘  └─────────┘ │
-│         ↓           ↓           ↓         │
-│    PreCommit    PreCommit    PreCommit    │
-│    Response    Response    Response    │
+│         ↓           ↓           ↓      │
+│    PreCommit    PreCommit    PreCommit │
+│    Response     Response     Response  │
 │  └─────────┘  └─────────┘  └─────────┘ │
-│                                     │
-│         All PreCommitted? ──────────────┘ │
-│                ↓                   │
-│              Phase 3: Commit          │
-│                                     │
+│                                        │
+│         All PreCommitted? ───────────┘ │
+│                ↓                       │
+│              Phase 3: Commit           │
+│                                        │
 │  ┌─────────┐  ┌─────────┐  ┌─────────┐ │
-│  │Resource A│  │Resource B│  │Resource C│ │
+│  │  Res A  │  │  Res B  │  │  Res C  │ │
 │  └─────────┘  └─────────┘  └─────────┘ │
-│         ↓           ↓           ↓         │
-│    Commit       Commit       Commit       │
+│         ↓           ↓           ↓      │
+│    Commit       Commit       Commit    │
 │  └─────────┘  └─────────┘  └─────────┘ │
-└─────────────────────────────────────────┘
+└────────────────────────────────────────┘
 ```
 
 **Benefits over 2PC:**
@@ -293,19 +293,19 @@ Write Request
 Primary Node
     ↓
 ┌─────────────────────────────────────────┐
-│                                     │
-│  Quorum: Write to majority (N/2 + 1) │
-│                                     │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐ │
-│  │Replica 1│  │Replica 2│  │Replica 3│ │
-│  └─────────┘  └─────────┘  └─────────┘ │
-│         ↓           ↓           ↓         │
-│    Acknowledge   Acknowledge   Acknowledge   │
-│  └─────────┘  └─────────┘  └─────────┘ │
-│                                     │
-│         Majority Acknowledged? ──────────────┘ │
-│                ↓                   │
-│            Commit Success           │
+│                                         │
+│  Quorum: Write to majority (N/2 + 1)    │
+│                                         │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  │
+│  │Replica 1│  │Replica 2│  │Replica 3│  │
+│  └─────────┘  └─────────┘  └─────────┘  │
+│         ↓           ↓           ↓       │
+│  Acknowledge  Acknowledge  Acknowledge  │
+│  └─────────┘  └─────────┘  └─────────┘  │
+│                                         │
+│         Majority Acknowledged? ───────┘ │
+│                ↓                        │
+│            Commit Success               │
 └─────────────────────────────────────────┘
 ```
 
@@ -391,24 +391,24 @@ for i in range(10):
 ```
 Cluster Nodes
     ↓
-┌─────────────────────────────────────────┐
-│                                     │
+┌────────────────────────────────────────┐
+│                                        │
 │  ┌─────────┐  ┌─────────┐  ┌─────────┐ │
-│  │  Node A  │  │  Node B  │  │  Node C  │ │
+│  │  Node A │  │  Node B │  │  Node C │ │
 │  └─────────┘  └─────────┘  └─────────┘ │
-│                                     │
-│              Leader Election Process      │
-│                                     │
-│  ┌─────────────────────────────────┐ │
-│  │         Leader: Node B         │ │
-│  │         Followers: A, C          │ │
-│  │         Term: 5                  │ │
-│  └─────────────────────────────────┘ │
-│                                     │
-│         Log Replication              │
-│                                     │
-│  Leader → Followers: Log Entries   │
-└─────────────────────────────────────────┘
+│                                        │
+│              Leader Election Process   │
+│                                        │
+│  ┌─────────────────────────────────┐   │
+│  │         Leader: Node B          │   │
+│  │         Followers: A, C         │   │
+│  │         Term: 5                 │   │
+│  └─────────────────────────────────┘   │
+│                                        │
+│         Log Replication                │
+│                                        │
+│  Leader → Followers: Log Entries       │
+└────────────────────────────────────────┘
 ```
 
 **Raft Implementation:**

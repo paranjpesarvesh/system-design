@@ -48,39 +48,39 @@ Payment Data: 10M × 500B = 5GB/day = 1.8TB/year
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    Load Balancer                    │
+│                    Load Balancer                        │
 └─────────────────────────────────────────────────────────┘
                     ↓
 ┌─────────────────────────────────────────────────────────┐
-│                 API Gateway                        │
-│                                                     │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
-│  │   User      │  │   Driver     │  │   Trip       │ │
-│  │   Service   │  │   Service    │  │   Service    │ │
-│  └─────────────┘  └─────────────┘  └─────────────┘ │
+│                 API Gateway                             │
+│                                                         │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐      │
+│  │   User      │  │   Driver    │  │   Trip      │      │
+│  │   Service   │  │   Service   │  │   Service   │      │
+│  └─────────────┘  └─────────────┘  └─────────────┘      │
 └─────────────────────────────────────────────────────────┘
     ↓                ↓                ↓
 ┌─────────────────────────────────────────────────────────┐
-│  User DB    │  Driver DB   │  Trip DB      │
-│  (PostgreSQL)│  (PostgreSQL)│  (PostgreSQL)│
+│  User DB       │  Driver DB     │  Trip DB              │
+│  (PostgreSQL)  │  (PostgreSQL)  │  (PostgreSQL)         │
 └─────────────────────────────────────────────────────────┘
     ↓                ↓                ↓
 ┌─────────────────────────────────────────────────────────┐
-│              Real-time Services                   │
-│                                                     │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
-│  │   Location   │  │   Matching    │  │   Pricing    │ │
-│  │   Service    │  │   Service    │  │   Service    │ │
-│  └─────────────┘  └─────────────┘  └─────────────┘ │
+│              Real-time Services                         │
+│                                                         │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐      │
+│  │   Location  │  │   Matching  │  │   Pricing   │      │
+│  │   Service   │  │   Service   │  │   Service   │      │
+│  └─────────────┘  └─────────────┘  └─────────────┘      │
 └─────────────────────────────────────────────────────────┘
     ↓                ↓                ↓
 ┌─────────────────────────────────────────────────────────┐
-│              Data Stores                        │
-│                                                     │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
-│  │   Redis      │  │   Kafka      │  │   S3         │ │
-│  │   (Cache)    │  │   (Events)   │  │   (Storage)   │ │
-│  └─────────────┘  └─────────────┘  └─────────────┘ │
+│              Data Stores                                │
+│                                                         │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐      │
+│  │   Redis     │  │   Kafka     │  │   S3        │      │
+│  │   (Cache)   │  │   (Events)  │  │   (Storage) │      │
+│  └─────────────┘  └─────────────┘  └─────────────┘      │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -252,68 +252,68 @@ class GeospatialIndex:
     def __init__(self, grid_size=0.01):  # ~1km grid
         self.grid_size = grid_size
         self.grid = {}
-    
+
     def get_grid_key(self, point: GeoPoint) -> Tuple[int, int]:
         """Convert lat/lng to grid coordinates"""
         lat_grid = int(point.lat / self.grid_size)
         lng_grid = int(point.lng / self.grid_size)
         return (lat_grid, lng_grid)
-    
+
     def add_driver(self, driver_id: str, location: GeoPoint):
         """Add driver to spatial index"""
         grid_key = self.get_grid_key(location)
-        
+
         if grid_key not in self.grid:
             self.grid[grid_key] = []
-        
+
         self.grid[grid_key].append({
             'driver_id': driver_id,
             'location': location,
             'timestamp': time.time()
         })
-    
+
     def find_nearby_drivers(self, location: GeoPoint, radius_km: float) -> List[str]:
         """Find drivers within radius"""
         # Calculate grid bounds
         lat_grid = int(location.lat / self.grid_size)
         lng_grid = int(location.lng / self.grid_size)
         grid_radius = int(radius_km / self.grid_size)
-        
+
         nearby_drivers = []
-        
+
         # Search surrounding grids
         for lat_offset in range(-grid_radius, grid_radius + 1):
             for lng_offset in range(-grid_radius, grid_radius + 1):
                 grid_key = (lat_grid + lat_offset, lng_grid + lng_offset)
-                
+
                 if grid_key in self.grid:
                     for driver in self.grid[grid_key]:
                         distance = self._calculate_distance(
                             location, driver['location']
                         )
-                        
+
                         if distance <= radius_km:
                             nearby_drivers.append(driver['driver_id'])
-        
+
         return list(set(nearby_drivers))  # Remove duplicates
-    
+
     def _calculate_distance(self, point1: GeoPoint, point2: GeoPoint) -> float:
         """Calculate distance between two points using Haversine formula"""
         R = 6371  # Earth's radius in km
-        
+
         lat1_rad = math.radians(point1.lat)
         lat2_rad = math.radians(point2.lat)
         delta_lat = math.radians(point2.lat - point1.lat)
         delta_lng = math.radians(point2.lng - point1.lng)
-        
-        a = (math.sin(delta_lat/2)**2 + 
-             math.cos(lat1_rad) * math.cos(lat2_rad) * 
+
+        a = (math.sin(delta_lat/2)**2 +
+             math.cos(lat1_rad) * math.cos(lat2_rad) *
              math.sin(delta_lng/2)**2)
         c = 2 * math.atan2(
-            math.sqrt(a), 
+            math.sqrt(a),
             math.sqrt(1-a)
         )
-        
+
         return R * c
 
 # Usage
@@ -343,7 +343,7 @@ class LocationProducer:
             value_serializer=lambda v: json.dumps(v).encode('utf-8'),
             key_serializer=lambda k: k.encode('utf-8') if k else None
         )
-    
+
     def send_location_update(self, driver_id: str, location: dict):
         """Send driver location update to Kafka"""
         message = {
@@ -354,13 +354,13 @@ class LocationProducer:
             'speed': location.get('speed', 0),
             'timestamp': time.time()
         }
-        
+
         self.producer.send(
             topic='driver_locations',
             key=driver_id,
             value=message
         )
-        
+
         print(f"Sent location update for driver {driver_id}")
 
 # Usage
@@ -369,7 +369,7 @@ location_producer = LocationProducer(['localhost:9092'])
 # Simulate driver location updates
 def simulate_driver_movement():
     driver_id = "driver_123"
-    
+
     # Start location
     location = {
         'lat': 37.7749,
@@ -377,10 +377,10 @@ def simulate_driver_movement():
         'heading': 90,
         'speed': 50  # km/h
     }
-    
+
     for i in range(10):
         location_producer.send_location_update(driver_id, location)
-        
+
         # Update location (simulate movement)
         location['lng'] += 0.001  # Move east
         time.sleep(5)  # Update every 5 seconds
@@ -425,7 +425,7 @@ class RideMatchingService:
     def __init__(self, geo_index, driver_service):
         self.geo_index = geo_index
         self.driver_service = driver_service
-    
+
     def find_best_driver(self, ride_request: RideRequest) -> Optional[Driver]:
         """Find best driver for ride request"""
         # Find nearby drivers
@@ -433,25 +433,25 @@ class RideMatchingService:
             GeoPoint(*ride_request.pickup_location),
             radius_km=3
         )
-        
+
         if not nearby_driver_ids:
             return None
-        
+
         # Get driver details
         nearby_drivers = []
         for driver_id in nearby_driver_ids:
             driver = self.driver_service.get_driver(driver_id)
             if driver and driver.is_available:
                 nearby_drivers.append(driver)
-        
+
         if not nearby_drivers:
             return None
-        
+
         # Score drivers based on multiple factors
         best_driver = self._score_drivers(nearby_drivers, ride_request)
-        
+
         return best_driver
-    
+
     def _score_drivers(self, drivers: List[Driver], ride_request: RideRequest) -> Driver:
         """Score drivers and return best one"""
         def calculate_score(driver: Driver) -> float:
@@ -460,31 +460,31 @@ class RideMatchingService:
                 driver.location, ride_request.pickup_location
             )
             distance_score = max(0, 100 - distance * 10)
-            
+
             # Rating score (higher rating is better)
             rating_score = driver.rating * 20
-            
+
             # Vehicle type score
             vehicle_score = self._get_vehicle_score(driver.vehicle_type, ride_request.ride_type)
-            
+
             # Availability score
             availability_score = 100 if driver.is_available else 0
-            
+
             total_score = distance_score + rating_score + vehicle_score + availability_score
             return total_score
-        
+
         # Sort drivers by score (highest first)
         drivers.sort(key=calculate_score, reverse=True)
         return drivers[0]
-    
+
     def _calculate_distance(self, point1: tuple, point2: tuple) -> float:
         """Calculate distance between two points"""
         lat1, lng1 = point1
         lat2, lng2 = point2
-        
+
         # Simplified distance calculation
         return math.sqrt((lat2 - lat1)**2 + (lng2 - lng1)**2)
-    
+
     def _get_vehicle_score(self, driver_vehicle: str, ride_type: str) -> float:
         """Get vehicle compatibility score"""
             compatibility = {
@@ -492,7 +492,7 @@ class RideMatchingService:
                 'premium': {'standard': 60, 'premium': 100, 'pool': 70},
                 'pool': {'standard': 80, 'premium': 70, 'pool': 100}
             }
-            
+
             return compatibility.get(ride_type, {}).get(driver_vehicle, 50)
 
 # Usage
@@ -503,7 +503,7 @@ class DriverService:
             'driver_2': Driver('driver_2', (37.7849, -122.4094), 4.5, True, 'premium'),
             'driver_3': Driver('driver_3', (37.7649, -122.4294), 4.9, False, 'standard'),
         }
-    
+
     def get_driver(self, driver_id: str) -> Optional[Driver]:
         return self.drivers.get(driver_id)
 
@@ -551,36 +551,36 @@ class DynamicPricingService:
             'premium': 4.00,
             'pool': 2.00
         }
-    
-    def calculate_price(self, ride_request: RideRequest, 
+
+    def calculate_price(self, ride_request: RideRequest,
                     demand_level: float, supply_level: float,
                     weather_conditions: str = 'clear') -> Dict:
         """Calculate dynamic price based on multiple factors"""
-        
+
         # Base price calculation
         distance_km = self._calculate_distance(
             ride_request.pickup_location,
             ride_request.dropoff_location
         )
-        
+
         base_price = self.base_prices[ride_request.ride_type] * distance_km
-        
+
         # Demand multiplier (surge pricing)
         demand_multiplier = self._calculate_demand_multiplier(demand_level, supply_level)
-        
+
         # Time multiplier (peak hours)
         time_multiplier = self._calculate_time_multiplier()
-        
+
         # Weather multiplier
         weather_multiplier = self._calculate_weather_multiplier(weather_conditions)
-        
+
         # Calculate final price
-        final_multiplier = (demand_multiplier * 
-                          time_multiplier * 
+        final_multiplier = (demand_multiplier *
+                          time_multiplier *
                           weather_multiplier)
-        
+
         final_price = base_price * final_multiplier
-        
+
         return {
             'base_price': base_price,
             'final_price': final_price,
@@ -591,14 +591,14 @@ class DynamicPricingService:
             },
             'total_multiplier': final_multiplier
         }
-    
+
     def _calculate_demand_multiplier(self, demand: float, supply: float) -> float:
         """Calculate demand-based surge multiplier"""
         if supply == 0:
             return 3.0  # Maximum surge
-        
+
         demand_supply_ratio = demand / supply
-        
+
         if demand_supply_ratio > 2.0:
             return 2.5  # High surge
         elif demand_supply_ratio > 1.5:
@@ -607,17 +607,17 @@ class DynamicPricingService:
             return 1.5  # Low surge
         else:
             return 1.0  # No surge
-    
+
     def _calculate_time_multiplier(self) -> float:
         """Calculate time-based multiplier"""
         current_hour = time.localtime().tm_hour
-        
+
         # Peak hours: 7-9 AM and 5-7 PM
         if (7 <= current_hour <= 9) or (17 <= current_hour <= 19):
             return 1.2  # 20% increase during peak hours
         else:
             return 1.0  # Normal pricing
-    
+
     def _calculate_weather_multiplier(self, weather: str) -> float:
         """Calculate weather-based multiplier"""
         weather_multipliers = {
@@ -627,7 +627,7 @@ class DynamicPricingService:
             'fog': 1.2,
             'storm': 2.0
         }
-        
+
         return weather_multipliers.get(weather, 1.0)
 
 # Usage

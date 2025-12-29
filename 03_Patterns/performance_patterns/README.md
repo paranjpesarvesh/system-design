@@ -23,11 +23,11 @@ L4: Database
 ```
 System Startup:
 ┌─────────────────────────────────────┐
-│ Preload Hot Data into Cache        │
-│                                 │
-│  Popular Products                  │
-│  User Sessions                    │
-│  Configuration                    │
+│ Preload Hot Data into Cache         │
+│                                     │
+│  Popular Products                   │
+│  User Sessions                      │
+│  Configuration                      │
 │  Frequently Accessed Data           │
 └─────────────────────────────────────┘
 ```
@@ -51,7 +51,7 @@ Application
 Connection Pool
     ↓
 ┌─────────────────────────────────────┐
-│  Conn 1  │  Conn 2  │  Conn 3  │
+│  Conn 1  │  Conn 2  │  Conn 3       │
 └─────────────────────────────────────┘
     ↓
 Database
@@ -71,14 +71,14 @@ Optimization → Add Index or Rewrite Query
 ```
 Single Database:
 ┌─────────────────────────────────────┐
-│ Users (100M records)      │
+│ Users (100M records)                │
 └─────────────────────────────────────┘
 
 Sharded Database:
-┌─────────────┬─────────────┬─────────────┐
-│ Shard 0    │ Shard 1    │ Shard 2    │ Shard 3
-│ Users 0-33M│ Users 33-66M│ Users 66-99M│ Users 99-999M│
-└─────────────┴─────────────┴─────────────┘
+┌─────────────┬─────────────┬─────────────┐─────────────
+│ Shard 0     │ Shard 1     │ Shard 2     │ Shard 3      │
+│ Users 0-33M │ Users 33-66M│ Users 66-99M│ Users 99-999M│
+└─────────────┴─────────────┴─────────────┘─────────────
 ```
 
 ## Application Optimization Patterns
@@ -87,17 +87,17 @@ Sharded Database:
 ```
 Initial Load:
 ┌─────────────────────────────────────┐
-│ Basic User Information            │
-│                                 │
-│  Name, Email, Profile Picture    │
+│ Basic User Information              │
+│                                     │
+│  Name, Email, Profile Picture       │
 └─────────────────────────────────────┘
 
 On Demand:
 ┌─────────────────────────────────────┐
-│ Additional Details                │
-│                                 │
-│  Order History, Preferences,     │
-│  Social Connections             │
+│ Additional Details                  │
+│                                     │
+│  Order History, Preferences,        │
+│  Social Connections                 │
 └─────────────────────────────────────┘
 ```
 

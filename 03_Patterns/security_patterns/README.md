@@ -11,14 +11,14 @@ Security patterns are architectural approaches designed to protect systems, data
 Identity Provider (IdP)
     ↓
 ┌─────────────────────────────────────┐
-│                                 │
-│  Service A  Service B  Service C  │
-│      ↓         ↓         ↓      │
-│  ┌─────────┐ ┌─────────┐ ┌─────────┐ │
-│  │   Auth    │  │   Auth    │  │   Auth    │
-│  │ Redirect │  │ Redirect │  │  Redirect │  │
-│  └─────────┘ └─────────┘ └─────────┘ │
-│                                 │
+│                                     │
+│  Service A  Service B  Service C    │
+│      ↓         ↓         ↓          │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐│
+│  │   Auth  │ │   Auth  │ │  Auth   ││
+│  │ Redirect│ │ Redirect│ │ Redirect││
+│  └─────────┘ └─────────┘ └─────────┘│
+│                                     │
 └─────────────────────────────────────┘
 ```
 
@@ -82,18 +82,18 @@ Encrypted Communication
 ```
 Production Data:
 ┌─────────────────────────────────────┐
-│ Name: John Doe             │
-│ Email: jo***@***.com     │
-│ Phone: ***-***-1234      │
-│ SSN: ***-**-****         │
+│ Name: John Doe                      │
+│ Email: jo***@***.com                │
+│ Phone: ***-***-1234                 │
+│ SSN: ***-**-****                    │
 └─────────────────────────────────────┘
 
 Development Data:
 ┌─────────────────────────────────────┐
-│ Name: John Doe             │
-│ Email: john@example.com     │
-│ Phone: 555-123-4567      │
-│ SSN: 123-45-6789         │
+│ Name: John Doe                      │
+│ Email: john@example.com             │
+│ Phone: 555-123-4567                 │
+│ SSN: 123-45-6789                    │
 └─────────────────────────────────────┘
 ```
 
